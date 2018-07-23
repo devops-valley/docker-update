@@ -1,0 +1,6 @@
+[submodule "sample/bitpoll"]
+	path = sample/bitpoll
+	url = ssh://git@git.wiai.de:22222/server/bitpoll.git
+[submodule "sample/bitpoll_0.1"]
+	path = sample/bitpoll_0.1
+	url = ssh://git@git.wiai.de:22222/server/bitpoll.git

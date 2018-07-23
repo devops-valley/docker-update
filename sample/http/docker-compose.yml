@@ -1,0 +1,19 @@
+version: "2"
+
+services:
+  http:
+    image: httpd:alpine
+#    ports:
+#      - "80:80"
+    volumes:
+      - /home/clemens/public_html/:/usr/local/apache2/htdocs/
+    networks:
+     - traefik_net
+    labels:
+     - "traefik.enable=true"
+     - "traefik.docker.network=traefik_net"
+     - "traefik.http.frontend.rule=Host:potato.kinf.wiai.uni-bamberg.de,www.potato.kinf.wiai.uni-bamberg.de,141.13.94.68,localhost,uni.clkl.de"
+networks:
+ traefik_net:
+  external:
+   name: traefik_net
