@@ -115,14 +115,22 @@ def start(files):
 		config = load_compose_config(f)
 		collector.add(config, f)
 	#print(json.dumps(collector.get_services_info(), indent=1))
-	print(json.dumps(collector.get_images_sources(), indent=1))
+	#print(json.dumps(collector.get_images_sources(), indent=1))
+	return collector.get_images_sources()
 		
 		
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description="Docker-compose parser")
 	parser.add_argument("compose_files", nargs="+")
+	parser.add_argument("--output", "-o")
+	
 	
 	args = parser.parse_args()
 	
-	start(args.compose_files)
+	overview = start(args.compose_files)
+	if args.output:
+		with open(args.output, "w") as out:
+			json.dump(overview, out, indent=1)
+	else:
+		print(json.dumps(overview, indent=1)
