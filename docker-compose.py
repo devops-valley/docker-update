@@ -138,6 +138,6 @@ if __name__ == "__main__":
 	overview = start(args.compose_files, args.ignore)
 	if args.output:
 		with open(args.output, "w") as out:
-			json.dump(overview, out, indent=1)
+			json.dump(overview, out, indent=1, sort_keys=True)
 	else:
 		print(json.dumps(overview, indent=1))
