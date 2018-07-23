@@ -42,10 +42,14 @@ def get_new_tags(image):
 
 if __name__=="__main__":
 	parser = argparse.ArgumentParser(description="list new docker image tags")
-	parser.add_argument("--image", "-i", nargs="+")
+	parser.add_argument("image", nargs="+")
+	parser.add_argument("--list", "-l", action="store_true")
 	
 	args= parser.parse_args()
 	for i in args.image:
 		print(i)
-		print(json.dumps(get_new_tags(i), indent=1))
+		if args.list:
+			print(json.dumps({k:str(v) for k,v in get_tags(i).items()}, indent=1))
+		else:
+			print(json.dumps(get_new_tags(i), indent=1))
 # call with: `python3 image_tags.py -i alpine ubuntu:xenial debian`
