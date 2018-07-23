@@ -29,15 +29,18 @@ def load_compose_config(f):
 def source_to_image(source):
 	return source.strip().split(" ")[1]
 
-def parse_dockerfile(f):
-	if not f.endswith(DOCKERFILE):
+def parse_dockerfile(build):
+	path = build["context"]
+	if "dockerfile" in build:
+		path = os.path.join(path, build["dockerfile"])
+	elif not path.endswith(DOCKERFILE):
 		log.warn(f"guessing Döckerfile… {f}")
-		f = os.path.join(f, DOCKERFILE)
-	if f.startswith("http"):
+		path = os.path.join(path, DOCKERFILE)
+	if path.startswith("http"):
 		log.warn("HTTP sources are not yet supported")
 		return [f]
 	keyword = "FROM"
-	with open(f, "r") as src:
+	with open(path, "r") as src:
 		sources = [source_to_image(line) for line in src if line.strip().startswith(keyword)]
 	return sources
 
@@ -92,7 +95,7 @@ class Collector:
 				}
 				image = UNTAGGED
 				if "build" in service:
-					service_info["base_images"] = parse_dockerfile(service["build"]["context"])
+					service_info["base_images"] = parse_dockerfile(service["build"])
 				if "image" in service:
 					image = image_info(service["image"])
 				if not image.image in images:
@@ -103,9 +106,12 @@ class Collector:
 					images[image.image][image.tag] += [service_info]
 		return images
 
-def start(files):
+def start(files, ignores):
 	collector = Collector()
 	for f in files:
+		if any([i in f for i in ignores]):
+			log.warn(f"skip {f} due to ignore rule {i}")
+			continue
 		if not f.endswith(COMPOSE_FILE):
 			log.warn(f"guessing docker-compöse.yml… {f}")
 			f = os.path.join(f, COMPOSE_FILE)
@@ -124,13 +130,14 @@ if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description="Docker-compose parser")
 	parser.add_argument("compose_files", nargs="+")
 	parser.add_argument("--output", "-o")
+	parser.add_argument("--ignore", "-i", nargs="+")
 	
 	
 	args = parser.parse_args()
 	
-	overview = start(args.compose_files)
+	overview = start(args.compose_files, args.ignore)
 	if args.output:
 		with open(args.output, "w") as out:
 			json.dump(overview, out, indent=1)
 	else:
-		print(json.dumps(overview, indent=1)
+		print(json.dumps(overview, indent=1))
