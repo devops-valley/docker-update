@@ -33,6 +33,9 @@ def parse_dockerfile(f):
 	if not f.endswith(DOCKERFILE):
 		log.warn(f"guessing Döckerfile… {f}")
 		f = os.path.join(f, DOCKERFILE)
+	if f.startswith("http"):
+		log.warn("HTTP sources are not yet supported")
+		return [f]
 	keyword = "FROM"
 	with open(f, "r") as src:
 		sources = [source_to_image(line) for line in src if line.strip().startswith(keyword)]
