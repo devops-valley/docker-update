@@ -39,7 +39,12 @@ def parse_dockerfile(f):
 	return sources
 
 def image_info(image):
-	image, tag = image.strip().split(":")
+	splitted = image.strip().split(":")
+	if len(splitted) > 1:
+		image, tag = splitted
+	else:
+		image = splitted[0]
+		tag = "latest"
 	return Image(image=image, tag=tag)
 
 class Collector:
