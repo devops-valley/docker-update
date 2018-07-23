@@ -34,7 +34,7 @@ def parse_dockerfile(build):
 	if "dockerfile" in build:
 		path = os.path.join(path, build["dockerfile"])
 	elif not path.endswith(DOCKERFILE):
-		log.warn(f"guessing Döckerfile… {f}")
+		log.warn(f"guessing Döckerfile… {path}")
 		path = os.path.join(path, DOCKERFILE)
 	if path.startswith("http"):
 		log.warn("HTTP sources are not yet supported")
@@ -110,7 +110,7 @@ def start(files, ignores):
 	collector = Collector()
 	for f in files:
 		if any([i in f for i in ignores]):
-			log.warn(f"skip {f} due to ignore rule {i}")
+			log.warn(f"skip {f} due to ignore rule")
 			continue
 		if not f.endswith(COMPOSE_FILE):
 			log.warn(f"guessing docker-compöse.yml… {f}")
