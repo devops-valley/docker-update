@@ -109,7 +109,7 @@ class Collector:
 def start(files, ignores):
 	collector = Collector()
 	for f in files:
-		if any([i in f for i in ignores]):
+		if ignores and any([i in f for i in ignores]):
 			log.warn(f"skip {f} due to ignore rule")
 			continue
 		if not f.endswith(COMPOSE_FILE):
@@ -124,14 +124,15 @@ def start(files, ignores):
 	#print(json.dumps(collector.get_images_sources(), indent=1))
 	return collector.get_images_sources()
 		
-		
-
-if __name__ == "__main__":
-	parser = argparse.ArgumentParser(description="Docker-compose parser")
+def args_setup(description):
+	parser = argparse.ArgumentParser(description=description)
 	parser.add_argument("compose_files", nargs="+")
 	parser.add_argument("--output", "-o")
-	parser.add_argument("--ignore", "-i", nargs="+")
-	
+	parser.add_argument("--ignore", "-i", nargs="+", default=False)
+	return parser
+
+if __name__ == "__main__":
+	parser = args_setup("Docker-compose parser")
 	
 	args = parser.parse_args()
 	
