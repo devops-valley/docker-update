@@ -129,6 +129,7 @@ def args_setup(description):
 	parser.add_argument("compose_files", nargs="+")
 	parser.add_argument("--output", "-o")
 	parser.add_argument("--ignore", "-i", nargs="+", default=False)
+	parser.add_argument("--match-suffix", "-s", action="store_false")
 	return parser
 
 if __name__ == "__main__":
