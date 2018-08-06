@@ -17,7 +17,7 @@ TAG_STORE = {}
 def api_call(url):
 	result = requests.get(url)
 	if not result.ok:
-		log.error(result, result.url)
+		log.error(f"{result}, {result.status_code}, {result.url}")
 		return {}
 	data = result.json()
 	tags = {}
@@ -44,7 +44,11 @@ def replace(string, replacements):
 	return string
 
 
-def compare(base, other, replacements=[("-","+"),]):
+def compare(base, other, match_suffix=False, replacements=[("-","+"),]):
+	if match_suffix:
+		suffix = base.split("-")[-1]
+		if not other.endswith(suffix):
+			return False
 	base = replace(base, replacements)
 	other = replace(other, replacements)
 	v1 = version.parse(base)
@@ -53,23 +57,17 @@ def compare(base, other, replacements=[("-","+"),]):
 	log.debug(f"{v1} < {v2}: {result}")
 	return result
 
-def get_new_tags(image):
+def get_new_tags(image, match_suffix=False):
 	if not ":" in image:
 		log.warn("using implicit latest, skip")
 		return
 	image_name, current_tag = image.split(":")
 	if not image_name in TAG_STORE:
 		TAG_STORE[image_name] = get_tags(image_name)
-	#if current_tag in TAG_STORE[image_name]:
-	#	first_update = TAG_STORE[image_name][current_tag]
-	#else:
-	#	print("!!! FALLBACK!")
-	#	first_update = list(TAG_STORE[image_name].values())[0]
-	#print(first_update)
 	new_tags = {}
 	for tag in TAG_STORE[image_name]:
 		log.debug("check("+str(tag)+")")
-		if compare(current_tag, tag):
+		if compare(current_tag, tag, match_suffix):
 			log.debug("NEWER!!!")
 			update = TAG_STORE[image_name][tag]
 			new_tags[tag] = str(update)

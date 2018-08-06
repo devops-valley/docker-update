@@ -1,13 +1,15 @@
 import argparse
 import json
+import logging
 
 import docker_compose
 import image_tags
 
+log = logging
 
-def find_updates(image_ref, usages):
+def find_updates(image_ref, usages, match_suffix=False):
 	try:
-		newer_tags = image_tags.get_new_tags(image_ref)
+		newer_tags = image_tags.get_new_tags(image_ref, match_suffix)
 	except ValueError as e:
 		newer_tags = e.args
 	return {
@@ -24,20 +26,21 @@ def main(args):
 			image_ref = f"{image}:{tag}"
 			if image_ref in updates:
 				continue
-			updates[image_ref] = find_updates(image_ref, images[image][tag])
+			updates[image_ref] = find_updates(image_ref, images[image][tag], args.match_suffix)
 			for usage in images[image][tag]:
 				if not "base_images" in usage:
 					continue
 				for base in usage["base_images"]:
+					info = [{
+						"is_base_image": True,
+						"path": usage["path"],
+						"service_name": usage["service_name"]
+					}]
 					if base in updates:
-						continue
+						updates[base]["usages"].append(info)
 					else:
-						info = {
-							"is_base_image": True,
-							"path": usage["path"],
-							"service_name": usage["service_name"]
-						}
-						updates[base] = find_updates(base, info)
+						log.info(f"find base image updates for {base}")
+						updates[base] = find_updates(base, info, args.match_suffix)
 				
 	if args.output:
 		with open(args.output, "w") as out:
