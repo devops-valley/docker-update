@@ -16,7 +16,6 @@ def find_updates(image_ref, usages):
 	}
 
 
-
 def main(args):
 	updates = {}
 	images = docker_compose.start(args.compose_files, args.ignore)
@@ -27,19 +26,18 @@ def main(args):
 				continue
 			updates[image_ref] = find_updates(image_ref, images[image][tag])
 			for usage in images[image][tag]:
-				if "base_image" in usage:
+				if not "base_images" in usage:
 					continue
-				for base in usage["base_image"]:
+				for base in usage["base_images"]:
 					if base in updates:
 						continue
 					else:
 						info = {
-							"base_image": True,
-							"path:" images[image][tag]["path"],
-							"service_name": images[image][tag]["service_name"]
+							"is_base_image": True,
+							"path": usage["path"],
+							"service_name": usage["service_name"]
 						}
 						updates[base] = find_updates(base, info)
-						
 				
 	if args.output:
 		with open(args.output, "w") as out:
