@@ -5,14 +5,14 @@ import docker_compose
 import image_tags
 
 
-def find_updates(image_ref):
+def find_updates(image_ref, usages):
 	try:
 		newer_tags = image_tags.get_new_tags(image_ref)
 	except ValueError as e:
 		newer_tags = e.args
 	return {
 		"updates": newer_tags,
-		"usages": images[image][tag],
+		"usages": usages,
 	}
 
 
@@ -25,15 +25,20 @@ def main(args):
 			image_ref = f"{image}:{tag}"
 			if image_ref in updates:
 				continue
-			updates[image_ref] = find_updates(image_ref)
-			for usage in images[image][tag:
+			updates[image_ref] = find_updates(image_ref, images[image][tag])
+			for usage in images[image][tag]:
 				if "base_image" in usage:
 					continue
 				for base in usage["base_image"]:
 					if base in updates:
 						continue
 					else:
-						updates[base] = find_updates(base)
+						info = {
+							"base_image": True,
+							"path:" images[image][tag]["path"],
+							"service_name": images[image][tag]["service_name"]
+						}
+						updates[base] = find_updates(base, info)
 						
 				
 	if args.output:
