@@ -31,16 +31,16 @@ def main(args):
 				if not "base_images" in usage:
 					continue
 				for base in usage["base_images"]:
-					info = [{
+					info = {
 						"is_base_image": True,
 						"path": usage["path"],
 						"service_name": usage["service_name"]
-					}]
+					}
 					if base in updates:
 						updates[base]["usages"].append(info)
 					else:
 						log.info(f"find base image updates for {base}")
-						updates[base] = find_updates(base, info, args.match_suffix)
+						updates[base] = find_updates(base, [info], args.match_suffix)
 				
 	if args.output:
 		with open(args.output, "w") as out:

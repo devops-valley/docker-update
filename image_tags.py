@@ -45,7 +45,7 @@ def replace(string, replacements):
 
 
 def compare(base, other, match_suffix=False, replacements=[("-","+"),]):
-	if match_suffix:
+	if match_suffix and "-" in base:
 		suffix = base.split("-")[-1]
 		if not other.endswith(suffix):
 			return False
