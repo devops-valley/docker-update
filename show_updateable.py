@@ -5,6 +5,16 @@ import docker_compose
 import image_tags
 
 
+def find_updates(image_ref):
+	try:
+		newer_tags = image_tags.get_new_tags(image_ref)
+	except ValueError as e:
+		newer_tags = e.args
+	return {
+		"updates": newer_tags,
+		"usages": images[image][tag],
+	}
+
 
 
 def main(args):
@@ -13,14 +23,19 @@ def main(args):
 	for image in images:
 		for tag in images[image]:
 			image_ref = f"{image}:{tag}"
-			try:
-				newer_tags = image_tags.get_new_tags(image_ref)
-			except ValueError as e:
-				newer_tags = e.args
-			updates[image_ref] = {
-				"updates": newer_tags,
-				"usages": images[image][tag]
-			}
+			if image_ref in updates:
+				continue
+			updates[image_ref] = find_updates(image_ref)
+			for usage in images[image][tag:
+				if "base_image" in usage:
+					continue
+				for base in usage["base_image"]:
+					if base in updates:
+						continue
+					else:
+						updates[base] = find_updates(base)
+						
+				
 	if args.output:
 		with open(args.output, "w") as out:
 			json.dump(updates, out, indent=1, sort_keys=True)

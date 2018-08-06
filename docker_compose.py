@@ -41,7 +41,7 @@ def parse_dockerfile(build):
 		return [f]
 	keyword = "FROM"
 	with open(path, "r") as src:
-		sources = [source_to_image(line) for line in src if line.strip().startswith(keyword)]
+		sources = [source_to_image(line) for line in src if line.strip().startswith(keyword)] # TODO lower/upper
 	return sources
 
 def image_info(image):
