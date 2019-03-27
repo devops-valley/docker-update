@@ -52,5 +52,5 @@ def main(args):
 if __name__=="__main__":
 	parser = docker_compose.args_setup("Show updates for docker-compose style services")
 	args = parser.parse_args()
+	print(args)
 	main(args)
-	

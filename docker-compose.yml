@@ -6,4 +6,4 @@ services:
   volumes:
    - /opt/docker/services:/services
    - ./:/out/
-  command: bash -c 'python3 /out/show_updateable.py -o /out/updates.json /services/* --ignore zammad'
+  command: bash -c 'python3 /out/show_updateable.py -s -o /out/updates.json /services/* --ignore zammad'
