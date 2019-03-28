@@ -1,0 +1,22 @@
+version: "3"
+
+services:
+ someservice:
+  build:
+    context: ./docker/
+    dockerfile: Dockerfile
+  ports:
+   - "8080:80"
+  restart: on-failure:5
+  depends_on:
+   - dbsomeservice
+
+
+ dbsomeservice:
+  image: mariadb:10.3.2
+  restart: on-failure:5
+  env_file:
+   - docker.env
+  volumes:
+   - ./mysql:/var/lib/mysql
+

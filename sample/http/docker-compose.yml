@@ -2,7 +2,7 @@ version: "2"
 
 services:
   http:
-    image: httpd:alpine
+    image: httpd:2.4.32-alpine
 #    ports:
 #      - "80:80"
     volumes:
@@ -17,3 +17,4 @@ networks:
  traefik_net:
   external:
    name: traefik_net
+

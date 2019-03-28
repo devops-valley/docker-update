@@ -1,0 +1,35 @@
+version: '2'
+
+services:
+  cloud:
+    image: nextcloud:14.0.8-apache
+#    image: owncloud/server:10.0.8
+    restart: on-failure:5
+    depends_on:
+      - dbcloud
+    volumes:
+      - ./data:/files
+      - ./config:/var/www/html/config
+      - ./apps:/var/www/html/custom_apps
+    ports:
+      - "127.0.0.1:3020:80"
+
+
+  dbcloud:
+    image: mariadb:10.3.2
+    restart: on-failure:5
+    env_file:
+       - docker.env
+    environment:
+#      - MYSQL_ROOT_PASSWORD=VerySecurePassword
+#      - MYSQL_USER=cloud
+#      - MYSQL_PASSWORD=CorrectBatteryHorseStaple
+#      - MYSQL_DATABASE=cloud
+      - MYSQL_MAX_ALLOWED_PACKET=128M
+      - MYSQL_INNODB_LOG_FILE_SIZE=64M
+      - MYSQL_INNODB_LARGE_PREFIX=ON
+      - MYSQL_INNODB_FILE_FORMAT=Barracuda
+    volumes:
+      - ./mysql:/var/lib/mysql
+
+
