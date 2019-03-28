@@ -12,7 +12,7 @@ services:
     labels:
      - "traefik.enable=true"
      - "traefik.docker.network=traefik_net"
-     - "traefik.http.frontend.rule=Host:potato.kinf.wiai.uni-bamberg.de,www.potato.kinf.wiai.uni-bamberg.de,141.13.94.68,localhost,uni.clkl.de"
+     - "traefik.http.frontend.rule=Host:git24.example"
 networks:
  traefik_net:
   external:
