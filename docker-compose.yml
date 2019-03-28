@@ -4,6 +4,6 @@ services:
   image: docker.clkl.de/docker/update:0.1_alpine
   build: .
   volumes:
-   - ./docker-compose.py:/docker-compose.py
-   - ./sample:/services
-  command: bash -c 'python3 /docker_compose.py /services/*'
+   - /opt/docker/services:/services
+   - ./:/out/
+  command: bash -c 'python3 /out/show_updateable.py -s -o /out/updates.json /services/* --ignore zammad'
