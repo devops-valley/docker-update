@@ -3,7 +3,7 @@ Docker Update
 
 Show available image-updates for your docker-compose managed services. Checks docker-compose image-tags as well as connected Dockerfiles in build-sections. 
 
-Lists (possible) available updates and where the old image(-tag) is used. Optimized for use with "pinned" tags. (Use a specific minor version to fuse your infrastrucutre.)
+Lists (possible) available updates and where the old image(-tag) is used. Optimized for use with "pinned" tags. (Use a specific minor version tag to fuse your infrastrucutre - e.g. `10.2-alpine` instead of `10-alpine`.)
 
 
 Requirements
