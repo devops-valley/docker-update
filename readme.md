@@ -1,7 +1,9 @@
 Docker Update
 =============
 
-Try to show updates for your used docker images.
+Show available image-updates for your docker-compose managed services. Checks docker-compose image-tags as well as connected Dockerfiles in build-sections. 
+
+Lists (possible) available updates and where the old image(-tag) is used. Optimized for use with "pinned" tags. (Use a specific minor version to fuse your infrastrucutre.)
 
 
 Requirements
@@ -12,17 +14,24 @@ Requirements
 * Python >=3.6
 * Libraries: requirements.txt (`pip3 install -r requirements.txt` or docker ;))
 
-You need a directory containing your service directories. These services must have a docker-compose.yml to get checked.
+
+Filesystem Structure
+--------------------
+
+You can call it on a single directory containing your `docker-compose.yml`. 
+
+Or you can execute it on a directory containing your service directories. These services must have a docker-compose.yml to get checked.
 
 Example:
 ```
 └── services
-    ├── bitpoll.wiai.de
+    ├── bitpoll.example.org
     │   ├── docker
-    │   ├── docker-compose.yml
+    │   │   └── Dockerfile
+    │   └── docker-compose.yml
     ├── dockerui
-    │   ├── docker-compose.yml
-    └── zitate
+    │   └── docker-compose.yml
+    └── gitea
         └── docker-compose.yml
 ```
 
@@ -57,6 +66,35 @@ usage: show_updateable.py [-h] [--output OUTPUT]
 * match-suffix: use only same suffixes in image labels (e.g. only -alpine images)
 * compose files: service directories: see #example (multiple paths allowed)
 
+
+Example Output
+--------------
+
+```
+{
+ "postgres:10-alpine": {
+  "updates": {
+   "10.1-alpine": "2018-01-10 04:44:17.433471",
+   "10.2-alpine": "2018-02-19 19:43:46.911031",
+   "10.3-alpine": "2018-05-12 10:44:57.814207",
+   "10.4-alpine": "2018-08-01 14:49:09.002434",
+   "11-alpine": "2018-08-01 14:46:34.449579"
+  },
+  "usages": [
+   {
+    "path": "/services/bitpoll.example.org/docker-compose.yml",
+    "service_name": "dbbitpoll.example.org"
+   },
+   {
+    "path": "/services/gitea/docker-compose.yml",
+    "service_name": "dbgitea"
+   }
+  ]
+ }
+}
+```
+
+
 Advantages
 ----------
 
@@ -83,5 +121,7 @@ Known Issues
 
 * Still WiP/PoC
 * http/https sources are not implemented yet
+* does not handle image updates without changing tags
 * some images have … weird tags
 * pull requests welcome
+
