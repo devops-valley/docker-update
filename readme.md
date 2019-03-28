@@ -9,6 +9,7 @@ Requirements
 
 * Docker
 * docker-compose
+* Python >=3.6
 * Libraries: requirements.txt (`pip3 install -r requirements.txt` or docker ;))
 
 You need a directory containing your service directories. These services must have a docker-compose.yml to get checked.
